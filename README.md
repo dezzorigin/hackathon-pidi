@@ -1,15 +1,37 @@
 # Hackathon Pidi
 
-Hackathon Pidi project.
+Hackathon Pidi — project by Nabil Aulia Dika (dezzorigin).
 
-## Tech stack
+## Status Proyek
 
-HTML/CSS/JS
+**Dalam pengembangan** _(README ada)_
 
-## Getting started
+## Tech Stack
 
-See project files for setup instructions.
+HTML/CSS/JavaScript
 
-## License
+## Struktur Proyek
 
-MIT
+```
+.gitignore
+HACKATON X DIGDAYA/
+LUNAS/
+README.md
+arsitekturv2lunas.html
+dokumentasi arsitektur/
+errnor-team-portfolio/
+file/
+image/
+jobdesk/
+```
+
+## Getting Started
+
+Buka file `index.html` di browser, atau serve folder dengan static server.
+
+## Lisensi
+
+MIT — lihat file [LICENSE](./LICENSE).
+
+---
+_Dibuat dan dikelola oleh Nabil Aulia Dika. Kontribusi dan issue welcome._
