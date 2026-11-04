@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F3F2EB;
+  --color-cream-dark: #E6E4D9;
+  --color-charcoal: #1E2022;
+  --color-charcoal-dark: #111214;
+  --color-muted-gray: #8A8E94;
+  
+  --color-pastel-yellow: #F6DF95;
+  --color-pastel-yellow-dark: #E2C97B;
+  --color-pastel-lavender: #A3A7FC;
+  --color-pastel-lavender-dark: #888CF7;
+  --color-pastel-sage: #C2D3B8;
+  --color-pastel-sage-dark: #A9BD9E;
+  --color-soft-coral: #E57373;
+}
+
+:root {
+  --background: #F3F2EB;
+  --foreground: #111214;
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body {
+  background-color: #F3F2EB;
+  color: #111214;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Soft Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(30, 32, 34, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 32, 34, 0.3);
+}
+
+/* Custom Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-pop-in {
+  animation: pop-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Soft Neo-Bento Utility Classes */
+.bento-card-light {
+  background-color: #FFFFFF;
+  border-radius: 28px;
+  border: 1px solid rgba(230, 228, 217, 0.6);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.03);
+}
+
+.bento-card-dark {
+  background-color: #1E2022;
+  color: #FFFFFF;
+  border-radius: 28px;
+}
+
+.bento-card-yellow {
+  background-color: #F6DF95;
+  color: #111214;
+  border-radius: 28px;
+}
+
+.bento-card-lavender {
+  background-color: #A3A7FC;
+  color: #111214;
+  border-radius: 28px;
+}
+
+.bento-card-sage {
+  background-color: #C2D3B8;
+  color: #111214;
+  border-radius: 28px;
+}
+
+/* Micro-interaction Helper */
+.press-effect {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+}
+.press-effect:active {
+  transform: scale(0.95);
+}

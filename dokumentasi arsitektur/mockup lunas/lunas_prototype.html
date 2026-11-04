@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LUNAS — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
+<style>
+  :root{
+    --bg:#E9EAEF; --app:#F6F5F1; --card:#FFFFFF; --ink:#1B2030; --muted:#7C8290; --line:#EDEBE4;
+    --brand:#4F46E5; --brand-soft:#ECEBFE; --teal:#0E9F6E; --teal-soft:#E2F5EE;
+    --coral:#F0594F; --coral-soft:#FCE9E6; --amber:#EF9D14; --amber-soft:#FDF1DB; --peach:#FFF1E8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Plus Jakarta Sans",sans-serif;background:var(--bg);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:28px}
+  .phone{position:relative;width:392px;height:844px;background:#0c0d12;border-radius:56px;padding:13px;
+    box-shadow:0 2px 6px rgba(20,20,45,.10),0 40px 80px -20px rgba(20,20,45,.35)}
+  .screenwrap{position:relative;height:100%;background:var(--app);border-radius:44px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .island{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:118px;height:30px;
+    background:#0c0d12;border-radius:16px;z-index:20}
+  .statusbar{height:50px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:16px 30px 0;font-size:13px;font-weight:700}
+  .statusbar .ic{display:flex;gap:6px;font-size:15px}
+  .viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
+  .viewport::-webkit-scrollbar{display:none}
+  .screen{display:none;padding:8px 20px 28px}
+  .screen.active{display:block;animation:fadeup .3s ease}
+  @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .bottomnav{flex:0 0 auto;height:74px;display:flex;background:var(--card);border-top:1px solid var(--line);
+    padding-bottom:8px}
+  .phone[data-nav="off"] .bottomnav{display:none}
+  .navitem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:var(--muted);font-size:10.5px;font-weight:600;cursor:pointer}
+  .navitem i{font-size:23px}
+  .navitem.on{color:var(--brand)}
+
+  .h1{font-size:25px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+  .sub{font-size:13.5px;color:var(--muted);line-height:1.55}
+  .card{background:var(--card);border-radius:24px;padding:18px;
+    box-shadow:0 1px 2px rgba(20,20,45,.04),0 10px 26px -12px rgba(20,20,45,.10)}
+  .money{font-variant-numeric:tabular-nums;font-weight:800;letter-spacing:-.02em}
+  .row{display:flex;align-items:center;gap:12px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:17px;
+    font-weight:700;font-size:15px;border:none;width:100%;cursor:pointer;font-family:inherit}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-teal{background:var(--teal);color:#fff}
+  .btn-ghost{background:transparent;color:var(--muted);font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px}
+  .ic-box{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:20px}
+  .pill-icn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .switch{position:relative;width:46px;height:27px;flex:0 0 auto}
+  .switch input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .switch .tr{position:absolute;inset:0;background:#D8D6CE;border-radius:999px;transition:.2s;pointer-events:none}
+  .switch .kn{position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch input:checked ~ .tr{background:var(--teal)}
+  .switch input:checked ~ .kn{transform:translateX(19px)}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:var(--brand-soft);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--brand);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(79,70,229,.4)}
+
+  @media (max-width:470px){
+    body{padding:0}
+    .phone{width:100vw;height:100vh;height:100dvh;border-radius:0;padding:0}
+    .screenwrap{border-radius:0}
+    .island{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="phone" id="phone" data-nav="off">
+  <div class="screenwrap">
+    <div class="island"></div>
+    <div class="statusbar"><span>9:41</span><span class="ic"><i class="ti ti-antenna-bars-5"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-3"></i></span></div>
+    <div class="viewport" id="viewport">
+
+      <!-- ONBOARDING -->
+      <section class="screen active" id="onboarding">
+        <div style="font-weight:800;color:var(--brand);font-size:18px;letter-spacing:-.01em;margin:6px 0 18px">LUNAS</div>
+        <div class="h1">Hubungkan rekening<br>& e-wallet kamu</div>
+        <p class="sub" style="margin-top:10px">LUNAS hanya membaca data (read-only). Kredensial bankmu tidak pernah disimpan.</p>
+
+        <div style="display:flex;flex-direction:column;gap:11px;margin-top:20px">
+          <div class="card row" style="padding:14px 16px">
+            <div class="ic-box" style="background:var(--brand-soft);color:var(--brand)"><i class="ti ti-building-bank"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">BCA</div><div class="sub" style="font-size:12px">Rekening utama</div></div>
+            <span class="chip" style="background:var(--teal-soft);color:var(--teal)"><i class="ti ti-check"></i>Terhubung</span>
+          </div>
+          <div class="card row" style="padding:14px 16px">
+            <div class="ic-box" style="background:var(--brand-soft);color:var(--brand)"><i class="ti ti-wallet"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">GoPay Later</div><div class="sub" style="font-size:12px">E-wallet</div></div>
+            <span class="chip" style="background:var(--teal-soft);color:var(--teal)"><i class="ti ti-check"></i>Terhubung</span>
+          </div>
+          <div class="card row" style="padding:14px 16px">
+            <div class="ic-box" style="background:#F1F0EA;color:var(--muted)"><i class="ti ti-credit-card"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">Kredivo</div><div class="sub" style="font-size:12px">Paylater</div></div>
+            <button class="chip" style="background:var(--brand);color:#fff;border:none;cursor:pointer;font-family:inherit;padding:8px 16px">Hubungkan</button>
+          </div>
+          <div class="card row" style="padding:14px 16px">
+            <div class="ic-box" style="background:#F1F0EA;color:var(--muted)"><i class="ti ti-shopping-bag"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">Akulaku</div><div class="sub" style="font-size:12px">Paylater</div></div>
+            <button class="chip" style="background:var(--brand);color:#fff;border:none;cursor:pointer;font-family:inherit;padding:8px 16px">Hubungkan</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;text-align:center;background:var(--peach);box-shadow:none">
+          <div class="sub" style="font-weight:700;color:#B5651D;font-size:12.5px">Atur Dynamic Buffer</div>
+          <div class="money" style="font-size:34px;color:var(--brand);margin:8px 0 14px">Rp 1.500.000</div>
+          <input type="range" min="500000" max="3000000" value="1500000">
+          <p class="sub" style="font-size:12px;margin-top:12px">Saldo minimum untuk kebutuhan harianmu — LUNAS tidak akan menyentuh dana ini.</p>
+        </div>
+
+        <div class="row" style="justify-content:center;gap:7px;margin:16px 0;color:var(--muted);font-size:12px;font-weight:600">
+          <i class="ti ti-shield-lock" style="color:var(--teal)"></i> Enkripsi TLS 1.3 · Akses read-only
+        </div>
+        <button class="btn btn-primary" onclick="show('beranda')">Lanjutkan</button>
+      </section>
+
+      <!-- BERANDA -->
+      <section class="screen" id="beranda">
+        <div class="row" style="margin:8px 0 18px">
+          <div style="flex:1"><div class="sub" style="font-size:12px">Selamat pagi,</div><div style="font-weight:800;font-size:19px">Nabil</div></div>
+          <div style="width:42px;height:42px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800">N</div>
+        </div>
+
+        <div class="card" style="background:var(--brand);color:#fff">
+          <div style="opacity:.85;font-size:13px;font-weight:600">Kekayaan bersih</div>
+          <div class="money" style="font-size:38px;margin:6px 0 8px">Rp 4.250.000</div>
+          <div class="row" style="gap:6px;font-size:12.5px;font-weight:600;opacity:.92"><i class="ti ti-arrow-up-right"></i> +Rp 320.000 bulan ini</div>
+          <div style="display:flex;gap:10px;margin-top:16px">
+            <div style="flex:1;background:rgba(255,255,255,.14);border-radius:14px;padding:11px 13px">
+              <div style="font-size:11px;opacity:.85">Aset</div><div class="money" style="font-size:16px">Rp 9.000.000</div></div>
+            <div style="flex:1;background:rgba(255,255,255,.14);border-radius:14px;padding:11px 13px">
+              <div style="font-size:11px;opacity:.85">Utang</div><div class="money" style="font-size:16px">Rp 4.750.000</div></div>
+          </div>
+        </div>
+
+        <div class="card row" style="margin-top:13px;cursor:pointer" onclick="show('utang')">
+          <svg width="76" height="76" viewBox="0 0 76 76" style="flex:0 0 auto">
+            <circle cx="38" cy="38" r="31" fill="none" stroke="#EDEBE4" stroke-width="8"/>
+            <circle cx="38" cy="38" r="31" fill="none" stroke="#0E9F6E" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="194.8" stroke-dashoffset="74" transform="rotate(-90 38 38)"/>
+            <text x="38" y="42" text-anchor="middle" font-size="16" font-weight="800" fill="#1B2030">62%</text>
+          </svg>
+          <div style="flex:1">
+            <div class="sub" style="font-size:12px;font-weight:600">Bebas utang dalam</div>
+            <div style="font-weight:800;font-size:20px;margin:2px 0">4 bln 12 hr</div>
+            <div class="sub" style="font-size:12px">Target: 16 Okt 2026</div>
+          </div>
+          <i class="ti ti-chevron-right" style="color:var(--muted)"></i>
+        </div>
+
+        <div class="card" style="margin-top:13px">
+          <div class="row" style="gap:9px;margin-bottom:6px"><div class="pill-icn" style="background:var(--brand-soft);color:var(--brand)"><i class="ti ti-bolt"></i></div><div style="font-weight:700;font-size:14px">Aksi LUNAS hari ini</div></div>
+          <p class="sub" style="font-size:13px;margin-bottom:14px">Ada <b style="color:var(--ink)">Rp 800.000</b> di atas buffer — lunasi Kredivo (APR 42%)?</p>
+          <button class="btn btn-primary" style="height:46px;font-size:14px" onclick="show('approve')">Tinjau pelunasan</button>
+        </div>
+
+        <div class="card row" style="margin-top:13px;background:var(--amber-soft);box-shadow:none;cursor:pointer" onclick="show('nudge')">
+          <div class="pill-icn" style="background:#fff;color:var(--amber)"><i class="ti ti-bell"></i></div>
+          <p class="sub" style="flex:1;font-size:12.5px;color:#8A5A07">Kamu hampir checkout Rp 350.000 — itu memundurkan bebas utang 6 hari.</p>
+          <i class="ti ti-chevron-right" style="color:#C68A2E"></i>
+        </div>
+      </section>
+
+      <!-- UTANG -->
+      <section class="screen" id="utang">
+        <div class="h1" style="margin:8px 0 16px">Utang kamu</div>
+        <div class="card" style="text-align:center">
+          <svg width="120" height="120" viewBox="0 0 120 120" style="margin:0 auto 6px;display:block">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#EDEBE4" stroke-width="11"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#0E9F6E" stroke-width="11" stroke-linecap="round"
+              stroke-dasharray="314.2" stroke-dashoffset="119.4" transform="rotate(-90 60 60)"/>
+            <text x="60" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="#1B2030">62%</text>
+            <text x="60" y="74" text-anchor="middle" font-size="10" fill="#7C8290">menuju bebas</text>
+          </svg>
+          <div class="sub" style="font-size:12px">Total outstanding</div>
+          <div class="money" style="font-size:26px;margin:2px 0 8px">Rp 4.750.000</div>
+          <span class="chip" style="background:var(--coral-soft);color:var(--coral)"><i class="ti ti-trending-down"></i> Bunga tergerus bulan ini Rp 142.000</span>
+        </div>
+
+        <div class="row" style="margin:18px 2px 10px"><span class="chip" style="background:var(--brand-soft);color:var(--brand)"><i class="ti ti-sort-descending"></i> Diurutkan: bunga tertinggi dulu (Avalanche)</span></div>
+
+        <div class="card" style="cursor:pointer;border:1.5px solid var(--coral)" onclick="show('approve')">
+          <div class="row"><div style="flex:1"><div style="font-weight:700">Kredivo</div><div class="sub" style="font-size:12px">Paylater</div></div>
+            <span class="chip" style="background:var(--coral-soft);color:var(--coral)">42% p.a.</span></div>
+          <div class="row" style="margin-top:10px"><div class="money" style="font-size:18px;flex:1">Rp 2.100.000</div><span class="chip" style="background:var(--brand);color:#fff">Prioritas #1</span></div>
+          <div style="height:6px;border-radius:999px;background:#EDEBE4;margin-top:12px;overflow:hidden"><div style="width:38%;height:100%;background:var(--coral)"></div></div>
+        </div>
+        <div class="card" style="margin-top:11px">
+          <div class="row"><div style="flex:1"><div style="font-weight:700">Akulaku</div><div class="sub" style="font-size:12px">Paylater</div></div>
+            <span class="chip" style="background:var(--coral-soft);color:var(--coral)">36% p.a.</span></div>
+          <div class="money" style="font-size:18px;margin-top:10px">Rp 1.650.000</div>
+          <div style="height:6px;border-radius:999px;background:#EDEBE4;margin-top:12px;overflow:hidden"><div style="width:22%;height:100%;background:#F0997B"></div></div>
+        </div>
+        <div class="card" style="margin-top:11px">
+          <div class="row"><div style="flex:1"><div style="font-weight:700">GoPay Later</div><div class="sub" style="font-size:12px">E-wallet</div></div>
+            <span class="chip" style="background:var(--amber-soft);color:#B5651D">30% p.a.</span></div>
+          <div class="money" style="font-size:18px;margin-top:10px">Rp 1.000.000</div>
+          <div style="height:6px;border-radius:999px;background:#EDEBE4;margin-top:12px;overflow:hidden"><div style="width:48%;height:100%;background:var(--amber)"></div></div>
+        </div>
+      </section>
+
+      <!-- APPROVE (1-Tap) -->
+      <section class="screen" id="approve">
+        <div style="text-align:center;padding:6px 0 18px"><div class="sub" style="font-size:12px">Konfirmasi pelunasan</div><div class="h1" style="font-size:21px">Lunasi Kredivo</div></div>
+        <div class="card" style="text-align:center">
+          <div class="money" style="font-size:40px;color:var(--brand)">Rp 800.000</div>
+          <span class="chip" style="background:var(--coral-soft);color:var(--coral);margin-top:10px">Kredivo · 42% p.a.</span>
+          <div class="row" style="justify-content:center;gap:6px;margin-top:14px;color:var(--teal);font-weight:700;font-size:13.5px"><i class="ti ti-rocket"></i> Mempercepat bebas utang 11 hari</div>
+        </div>
+        <div class="card" style="margin-top:13px;padding:6px 18px">
+          <div class="row" style="padding:13px 0;border-bottom:1px solid var(--line)"><span class="sub" style="flex:1;font-size:13.5px">Dana tersedia</span><span class="money" style="font-size:14px">Rp 2.300.000</span></div>
+          <div class="row" style="padding:13px 0;border-bottom:1px solid var(--line)"><span class="sub" style="flex:1;font-size:13.5px">Buffer aman (disisakan)</span><span class="money" style="font-size:14px">Rp 1.500.000</span></div>
+          <div class="row" style="padding:13px 0"><span style="flex:1;font-size:13.5px;font-weight:700">Dieksekusi</span><span class="money" style="font-size:14px;color:var(--brand)">Rp 800.000</span></div>
+        </div>
+        <div class="row" style="gap:8px;margin:14px 4px;color:var(--muted);font-size:12px;font-weight:600">
+          <i class="ti ti-shield-check" style="color:var(--teal)"></i> Dieksekusi via mitra berlisensi (PJP) — kamu yang menyetujui.
+        </div>
+        <button class="btn btn-primary" onclick="show('sukses')"><i class="ti ti-fingerprint" style="font-size:20px"></i> Tahan untuk setujui</button>
+        <button class="btn btn-ghost" style="margin-top:6px" onclick="show('beranda')">Nanti dulu</button>
+      </section>
+
+      <!-- SUKSES -->
+      <section class="screen" id="sukses">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:660px;text-align:center">
+          <div style="width:92px;height:92px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:46px"><i class="ti ti-check"></i></div>
+          <div class="h1" style="margin:22px 0 8px">Pelunasan berhasil</div>
+          <p class="sub" style="max-width:250px">Kredivo terbayar <b style="color:var(--ink)">Rp 800.000</b>. Bebas utang dipercepat <b style="color:var(--teal)">11 hari</b> jadi 5 Okt 2026.</p>
+          <button class="btn btn-primary" style="margin-top:28px;width:230px" onclick="show('beranda')">Kembali ke beranda</button>
+        </div>
+      </section>
+
+      <!-- NUDGE -->
+      <section class="screen" id="nudge">
+        <div style="text-align:center;padding:14px 0">
+          <div style="width:74px;height:74px;border-radius:50%;background:var(--amber-soft);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 18px"><i class="ti ti-hand-stop"></i></div>
+          <div class="h1">Yakin mau lanjut?</div>
+        </div>
+        <div class="card">
+          <div class="row"><div class="ic-box" style="background:#F1F0EA;color:var(--muted)"><i class="ti ti-shopping-bag"></i></div>
+            <div style="flex:1"><div class="sub" style="font-size:12px">Pengeluaran</div><div class="money" style="font-size:18px">Rp 350.000</div></div>
+            <div class="sub" style="font-size:13px">Tokopedia</div></div>
+        </div>
+        <div class="card" style="margin-top:13px;background:var(--amber-soft);box-shadow:none">
+          <div class="row" style="gap:8px;color:#8A5A07;font-weight:700;font-size:13.5px"><i class="ti ti-calendar-x"></i> Bebas utang mundur 6 hari</div>
+          <div class="row" style="margin-top:12px;font-size:13px;font-weight:700"><span style="color:var(--teal)">16 Okt</span><i class="ti ti-arrow-right" style="margin:0 10px;color:#C68A2E"></i><span style="color:var(--coral)">22 Okt</span></div>
+        </div>
+        <div class="card row" style="margin-top:13px;gap:10px">
+          <div class="pill-icn" style="background:var(--brand-soft);color:var(--brand)"><i class="ti ti-sparkles"></i></div>
+          <p class="sub" style="flex:1;font-size:12.5px">Kalau ditahan, Rp 350.000 ini bisa melunasi <b style="color:var(--ink)">8% tagihan Kredivo</b>.</p>
+        </div>
+        <button class="btn btn-teal" style="margin-top:18px" onclick="show('beranda')">Batalkan, simpan untuk lunasi utang</button>
+        <button class="btn btn-ghost" style="margin-top:6px" onclick="show('beranda')">Tetap lanjut</button>
+      </section>
+
+      <!-- INVESTASI -->
+      <section class="screen" id="investasi">
+        <div class="h1" style="margin:8px 0 16px">Investasi</div>
+        <div class="card" style="background:var(--teal);color:#fff">
+          <div style="opacity:.9;font-size:13px;font-weight:600">Dana diselamatkan dari bunga utang</div>
+          <div class="money" style="font-size:34px;margin:6px 0 4px">Rp 1.200.000</div>
+          <div style="opacity:.9;font-size:12.5px">kini bekerja untukmu</div>
+        </div>
+        <div class="card" style="margin-top:13px">
+          <div class="row"><div style="flex:1"><div style="font-weight:700;font-size:14.5px">Reksa Dana Pasar Uang</div><div class="sub" style="font-size:12px">RDPU · risiko rendah</div></div>
+            <span class="chip" style="background:var(--teal-soft);color:var(--teal)"><i class="ti ti-trending-up"></i> +1,53%</span></div>
+          <div class="money" style="font-size:24px;margin-top:12px">Rp 1.218.400</div>
+          <div class="sub" style="font-size:12px">1.214,2 unit</div>
+        </div>
+        <div class="card row" style="margin-top:13px">
+          <svg width="72" height="72" viewBox="0 0 72 72" style="flex:0 0 auto">
+            <circle cx="36" cy="36" r="28" fill="none" stroke="#0E9F6E" stroke-width="12" stroke-dasharray="123.2 52.8" transform="rotate(-90 36 36)"/>
+            <circle cx="36" cy="36" r="28" fill="none" stroke="#9FE1CB" stroke-width="12" stroke-dasharray="52.8 123.2" stroke-dashoffset="-123.2" transform="rotate(-90 36 36)"/>
+          </svg>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13.5px;margin-bottom:6px">Alokasi optimal (MVO)</div>
+            <div class="row" style="font-size:12px;gap:7px"><span style="width:10px;height:10px;border-radius:3px;background:var(--teal)"></span>RDPU 70%</div>
+            <div class="row" style="font-size:12px;gap:7px;margin-top:4px"><span style="width:10px;height:10px;border-radius:3px;background:#9FE1CB"></span>Kas siaga 30%</div>
+          </div>
+        </div>
+        <div class="card row" style="margin-top:13px">
+          <div style="flex:1"><div style="font-weight:700;font-size:14px">Auto-Sweep ke investasi</div><div class="sub" style="font-size:12px;margin-top:2px">Setelah utang sehat, sisa dana otomatis ke RDPU.</div></div>
+          <label class="switch"><input type="checkbox" checked><span class="tr"></span><span class="kn"></span></label>
+        </div>
+      </section>
+
+      <!-- PROFIL -->
+      <section class="screen" id="profil">
+        <div class="h1" style="margin:8px 0 18px">Profil</div>
+        <div class="card row">
+          <div style="width:54px;height:54px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px">N</div>
+          <div style="flex:1"><div style="font-weight:800;font-size:16px">Nabil Aulia Dika</div><div class="sub" style="font-size:12.5px">nblauliadka@gmail.com</div></div>
+        </div>
+        <div class="card" style="margin-top:13px;padding:4px 18px">
+          <div class="row" style="padding:15px 0;border-bottom:1px solid var(--line)"><i class="ti ti-link" style="color:var(--brand);font-size:19px"></i><span style="flex:1;margin-left:12px;font-size:14px;font-weight:600">Akun terhubung</span><span class="sub" style="font-size:13px">2</span><i class="ti ti-chevron-right" style="color:var(--muted);margin-left:6px"></i></div>
+          <div class="row" style="padding:15px 0;border-bottom:1px solid var(--line)"><i class="ti ti-shield-lock" style="color:var(--teal);font-size:19px"></i><span style="flex:1;margin-left:12px;font-size:14px;font-weight:600">Keamanan & 2FA</span><i class="ti ti-chevron-right" style="color:var(--muted)"></i></div>
+          <div class="row" style="padding:15px 0;border-bottom:1px solid var(--line)"><i class="ti ti-adjustments" style="color:var(--amber);font-size:19px"></i><span style="flex:1;margin-left:12px;font-size:14px;font-weight:600">Dynamic Buffer</span><span class="sub" style="font-size:13px">Rp 1,5 jt</span><i class="ti ti-chevron-right" style="color:var(--muted);margin-left:6px"></i></div>
+          <div class="row" style="padding:15px 0"><i class="ti ti-info-circle" style="color:var(--muted);font-size:19px"></i><span style="flex:1;margin-left:12px;font-size:14px;font-weight:600">Tentang LUNAS</span><i class="ti ti-chevron-right" style="color:var(--muted)"></i></div>
+        </div>
+      </section>
+
+    </div>
+
+    <nav class="bottomnav">
+      <div class="navitem" data-t="beranda" onclick="show('beranda')"><i class="ti ti-home-2"></i>Beranda</div>
+      <div class="navitem" data-t="utang" onclick="show('utang')"><i class="ti ti-receipt-2"></i>Utang</div>
+      <div class="navitem" data-t="investasi" onclick="show('investasi')"><i class="ti ti-chart-pie"></i>Investasi</div>
+      <div class="navitem" data-t="profil" onclick="show('profil')"><i class="ti ti-user"></i>Profil</div>
+    </nav>
+  </div>
+</div>
+
+<script>
+  var flows = {onboarding:1, approve:1, nudge:1, sukses:1};
+  function show(id){
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+    document.getElementById(id).classList.add('active');
+    document.getElementById('phone').dataset.nav = flows[id] ? 'off' : 'on';
+    document.querySelectorAll('.navitem').forEach(function(n){n.classList.toggle('on', n.dataset.t===id)});
+    document.getElementById('viewport').scrollTop = 0;
+  }
+</script>
+</body>
+</html>

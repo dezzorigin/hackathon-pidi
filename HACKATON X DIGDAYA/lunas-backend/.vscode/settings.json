@@ -1,0 +1,10 @@
+{
+    "python.defaultInterpreterPath": "/home/nblauliadka/lunas-backend/venv/bin/python",
+    "python.interpreterPath": "/home/nblauliadka/lunas-backend/venv/bin/python",
+    "python.analysis.extraPaths": [
+        "/home/nblauliadka/lunas-backend/venv/lib/python3.14/site-packages",
+        "/home/nblauliadka/lunas-backend",
+        "${workspaceFolder}/venv/lib/python3.14/site-packages",
+        "${workspaceFolder}"
+    ]
+}

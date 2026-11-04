@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUNAS — Arsitektur Sistem</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eceef3; --card:#ffffff; --ink:#161d2e; --muted:#5a6577; --line:#e3e7ef;
+    --l1:#4338ca; --l1t:#eeedfb;
+    --l2:#1d4ed8; --l2t:#e8effc;
+    --l3:#0d9488; --l3t:#e2f4f0;
+    --l4:#e07b16; --l4t:#fdefdd;
+    --l5:#7c3aed; --l5t:#f1eafc;
+    --l6:#1e3a8a; --l6t:#e7ecf7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Plus Jakarta Sans",sans-serif;background:var(--bg);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .poster{max-width:1500px;margin:0 auto;padding:30px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px}
+  .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  /* top bar */
+  .topbar{display:grid;grid-template-columns:1.05fr 1.35fr .95fr;gap:16px;align-items:stretch}
+  .brand{padding:22px 24px;display:flex;flex-direction:column;justify-content:center}
+  .brand h1{font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--l1)}
+  .brand .sub{font-size:13px;font-weight:600;color:var(--ink);margin-top:8px;letter-spacing:.02em}
+  .brand .desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .pill{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--l1t);color:var(--l1)}
+  .cluster{padding:14px 16px}
+  .cluster .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--l2);color:#fff;letter-spacing:.04em}
+  .surf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .surf .s{background:var(--l2t);border-radius:11px;padding:11px 8px;text-align:center}
+  .surf .s i{font-size:21px;color:var(--l2)}
+  .surf .s span{display:block;font-size:11px;font-weight:600;margin-top:5px}
+  .edge ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:2px}
+  .edge li{font-size:12px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .edge li i{font-size:15px;color:var(--l6)}
+
+  /* body */
+  .body{display:grid;grid-template-columns:1fr 268px;gap:16px;margin-top:16px}
+  .layers{display:flex;flex-direction:column;gap:12px}
+  .layer{display:grid;grid-template-columns:188px 1fr;gap:12px}
+  .tab{border-radius:14px;padding:16px 15px;color:#fff;display:flex;flex-direction:column;justify-content:center}
+  .tab .n{font-size:12px;font-weight:800;opacity:.7}
+  .tab .t{font-size:15px;font-weight:800;line-height:1.15;margin-top:3px}
+  .tab .d{font-size:11px;font-weight:500;opacity:.92;margin-top:8px;line-height:1.45}
+  .tab .mvp{font-size:10px;font-weight:700;background:rgba(255,255,255,.22);color:#fff;padding:3px 8px;border-radius:999px;margin-top:9px;align-self:flex-start}
+  .content{border-radius:14px;padding:13px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .c{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 11px;display:flex;gap:9px;align-items:flex-start}
+  .c .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .c .ic i{font-size:17px}
+  .c .tx b{display:block;font-size:12.5px;font-weight:700;line-height:1.2}
+  .c .tx span{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3}
+
+  .l1 .tab{background:var(--l1)} .l1 .content{background:var(--l1t)} .l1 .ic{background:var(--l1t);color:var(--l1)}
+  .l2 .tab{background:var(--l2)} .l2 .content{background:var(--l2t)} .l2 .ic{background:var(--l2t);color:var(--l2)}
+  .l3 .tab{background:var(--l3)} .l3 .content{background:var(--l3t)} .l3 .ic{background:var(--l3t);color:var(--l3)}
+  .l4 .tab{background:var(--l4)} .l4 .content{background:var(--l4t)} .l4 .ic{background:var(--l4t);color:var(--l4)}
+  .l5 .tab{background:var(--l5)} .l5 .content{background:var(--l5t)} .l5 .ic{background:var(--l5t);color:var(--l5)}
+  .l6 .tab{background:var(--l6)} .l6 .content{background:var(--l6t)} .l6 .ic{background:var(--l6t);color:var(--l6)}
+
+  /* cross-cutting */
+  .xcut{background:#fff8ec;border:1px solid #f1e1bf;border-radius:16px;padding:16px 15px;height:fit-content}
+  .xcut > .lbl{color:#9a6b14;margin-bottom:12px;display:block}
+  .xc{display:flex;gap:10px;padding:11px 0;border-top:1px solid #f1e1bf}
+  .xc:first-of-type{border-top:none;padding-top:2px}
+  .xc i{font-size:19px;flex:0 0 auto;margin-top:1px}
+  .xc h4{font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+  .xc p{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
+
+  /* deployment full width */
+  .deploy{margin-top:12px}
+  .pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+  .pstep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:150px}
+  .pstep i{font-size:22px;color:var(--l6)}
+  .pstep b{font-size:12.5px;font-weight:700;display:block}
+  .pstep span{font-size:11px;color:var(--muted)}
+  .parrow{display:flex;align-items:center;justify-content:center;color:var(--l6);font-size:18px;padding:0 8px}
+
+  /* footer */
+  .foot{display:grid;grid-template-columns:1fr auto;gap:16px;margin-top:14px;align-items:center}
+  .principles{padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .principles .lbl{color:var(--l1)}
+  .principles .ps{display:flex;flex-wrap:wrap;gap:8px}
+  .principles .ps span{font-size:11.5px;font-weight:600;color:var(--ink);background:var(--bg);padding:5px 11px;border-radius:999px}
+  .sign{text-align:right;padding:8px 4px}
+  .sign b{font-size:15px;font-weight:800;color:var(--l1)}
+  .sign span{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+
+  @media print{ @page{size:A3 landscape;margin:8mm} body{background:#fff} .poster{max-width:none;padding:0} }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="topbar">
+    <div class="panel brand">
+      <h1>LUNAS</h1>
+      <div class="sub">Layanan Utang &amp; Navigasi Aset</div>
+      <div class="desc">Asisten keuangan otonom berbasis Open Banking yang mentransformasi debitur menjadi investor ritel.</div>
+      <div class="pills">
+        <span class="pill">Zero-Friction</span>
+        <span class="pill">Liability-First</span>
+        <span class="pill">Compliant-by-Design</span>
+      </div>
+    </div>
+
+    <div class="panel cluster">
+      <div class="head"><span class="lbl">Klien</span><span class="badge">Flutter · 1 codebase</span></div>
+      <div class="surf">
+        <div class="s"><i class="ti ti-brand-apple"></i><span>iOS App</span></div>
+        <div class="s"><i class="ti ti-brand-android"></i><span>Android App</span></div>
+        <div class="s"><i class="ti ti-bell-ringing"></i><span>Push (FCM)</span></div>
+      </div>
+    </div>
+
+    <div class="panel cluster edge">
+      <div class="head"><span class="lbl">Edge / Gateway</span></div>
+      <ul>
+        <li><i class="ti ti-shield-lock"></i> Cloud Armor (WAF)</li>
+        <li><i class="ti ti-lock-check"></i> Terminasi TLS 1.3</li>
+        <li><i class="ti ti-gauge"></i> Rate limiting</li>
+        <li><i class="ti ti-server-bolt"></i> Load balancing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="layers">
+
+      <div class="layer l1">
+        <div class="tab"><span class="n">01</span><span class="t">Presentation Layer</span><span class="d">UI lintas-platform iOS &amp; Android dari satu codebase Flutter.</span></div>
+        <div class="content"><div class="grid">
+          <div class="c"><div class="ic"><i class="ti ti-layout-dashboard"></i></div><div class="tx"><b>Net-Worth Dashboard</b><span>Realtime</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-list-check"></i></div><div class="tx"><b>Liabilities Tracker</b><span>Agregat utang</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-calendar-stats"></i></div><div class="tx"><b>Debt-Free Countdown</b><span>Jangkar retensi</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-fingerprint"></i></div><div class="tx"><b>1-Tap Approve</b><span>2FA biometrik/PIN</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-bell"></i></div><div class="tx"><b>Behavioral Nudge</b><span>Feed kontekstual</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-adjustments"></i></div><div class="tx"><b>Onboarding &amp; Buffer</b><span>Dynamic Buffer</span></div></div>
+        </div></div>
+      </div>
+
+      <div class="layer l2">
+        <div class="tab"><span class="n">02</span><span class="t">API Gateway &amp; Orchestration</span><span class="d">Pintu masuk tunggal: routing async, auth, validasi (FastAPI).</span></div>
+        <div class="content"><div class="grid">
+          <div class="c"><div class="ic"><i class="ti ti-key"></i></div><div class="tx"><b>Authentication</b><span>JWT RS256</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-gauge"></i></div><div class="tx"><b>Rate Limiting</b><span>Anti-abuse</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-shield-check"></i></div><div class="tx"><b>Request Validation</b><span>Schema Pydantic</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-clock-play"></i></div><div class="tx"><b>Sweep Scheduler</b><span>Trigger gajian</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-webhook"></i></div><div class="tx"><b>Webhook Handler</b><span>Callback partner</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-file-text"></i></div><div class="tx"><b>Logging</b><span>Audit trail</span></div></div>
+        </div></div>
+      </div>
+
+      <div class="layer l3">
+        <div class="tab"><span class="n">03</span><span class="t">Intelligence &amp; Core Services</span><span class="d">Logika bisnis terpisah jadi service modular yang independen.</span></div>
+        <div class="content"><div class="grid">
+          <div class="c"><div class="ic"><i class="ti ti-arrows-shuffle"></i></div><div class="tx"><b>Aggregation Service</b><span>Normalisasi data</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-trending-down"></i></div><div class="tx"><b>Liability Engine</b><span>Avalanche (dominance)</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-chart-pie"></i></div><div class="tx"><b>Investment Engine</b><span>MVO → RDPU/SBN</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-sparkles"></i></div><div class="tx"><b>Nudging Service</b><span>RAG + Vertex AI</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-calculator"></i></div><div class="tx"><b>Net-Worth Calculator</b><span>Aset − liabilitas</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-send"></i></div><div class="tx"><b>Notification Service</b><span>Push / FCM</span></div></div>
+        </div></div>
+      </div>
+
+      <div class="layer l4">
+        <div class="tab"><span class="n">04</span><span class="t">Data Layer</span><span class="d">PostgreSQL untuk konsistensi, pgvector untuk RAG. Tanpa kredensial bank.</span></div>
+        <div class="content"><div class="grid">
+          <div class="c"><div class="ic"><i class="ti ti-database"></i></div><div class="tx"><b>Core DB · PostgreSQL</b><span>Users, tx, liabilities</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-vector-triangle"></i></div><div class="tx"><b>pgvector</b><span>KB CFP &amp; OJK</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-key-off"></i></div><div class="tx"><b>Token Vault</b><span>Tanpa kredensial bank</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-bolt"></i></div><div class="tx"><b>Redis</b><span>Cache / session</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-cloud"></i></div><div class="tx"><b>Object Storage · GCS</b><span>Dokumen</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-history"></i></div><div class="tx"><b>Audit Log</b><span>Immutable</span></div></div>
+        </div></div>
+      </div>
+
+      <div class="layer l5">
+        <div class="tab"><span class="n">05</span><span class="t">Integration &amp; External</span><span class="d">Akses data &amp; eksekusi dana lewat mitra berlisensi (read-only + PJP).</span><span class="mvp">MVP: mode sandbox / simulasi</span></div>
+        <div class="content"><div class="grid">
+          <div class="c"><div class="ic"><i class="ti ti-building-bank"></i></div><div class="tx"><b>Account Aggregator</b><span>Brick / Brankas</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-credit-card"></i></div><div class="tx"><b>Payment Rail · PJP</b><span>Eksekusi · SNAP BI</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-receipt"></i></div><div class="tx"><b>Paylater / Pinjol</b><span>Outstanding &amp; APR</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-chart-line"></i></div><div class="tx"><b>Manajer Investasi</b><span>Gateway RDPU</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-robot"></i></div><div class="tx"><b>Vertex AI · Gemini</b><span>LLM privat (no-train)</span></div></div>
+          <div class="c"><div class="ic"><i class="ti ti-device-mobile-message"></i></div><div class="tx"><b>FCM</b><span>Push delivery</span></div></div>
+        </div></div>
+      </div>
+
+    </div>
+
+    <div class="xcut">
+      <span class="lbl">Cross-Cutting Concerns</span>
+      <div class="xc"><i class="ti ti-shield-lock" style="color:#0d9488"></i><div><h4>Security</h4><p>TLS 1.3 · AES-256 at-rest · JWT RS256 · 2FA · OWASP. Tanpa simpan kredensial bank.</p></div></div>
+      <div class="xc"><i class="ti ti-gavel" style="color:#7c3aed"></i><div><h4>Compliance</h4><p>POJK 22/2023 · UU PDP 27/2022 · SNAP via partner. Posisi: orchestrator, bukan PJP.</p></div></div>
+      <div class="xc"><i class="ti ti-chart-dots" style="color:#1d4ed8"></i><div><h4>Observability</h4><p>Cloud Logging · audit trail · monitoring &amp; alerting.</p></div></div>
+      <div class="xc"><i class="ti ti-bolt" style="color:#e07b16"></i><div><h4>Performance</h4><p>Async FastAPI · Redis cache · latensi rendah.</p></div></div>
+      <div class="xc"><i class="ti ti-refresh" style="color:#1e3a8a"></i><div><h4>Reliability</h4><p>Auto-scaling · scale-to-zero · backups &amp; DR.</p></div></div>
+    </div>
+  </div>
+
+  <div class="layer l6 deploy">
+    <div class="tab"><span class="n">06</span><span class="t">Deployment</span><span class="d">CI/CD otomatis. Serverless, auto-scaling, scale-to-zero.</span></div>
+    <div class="content"><div class="pipe">
+      <div class="pstep"><i class="ti ti-brand-github"></i><div><b>Code Repository</b><span>GitHub</span></div></div>
+      <div class="parrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="pstep"><i class="ti ti-git-merge"></i><div><b>CI/CD Pipeline</b><span>GitHub Actions</span></div></div>
+      <div class="parrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="pstep"><i class="ti ti-brand-docker"></i><div><b>Container Image</b><span>Docker</span></div></div>
+      <div class="parrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="pstep"><i class="ti ti-cloud-cog"></i><div><b>Runtime</b><span>GCP Cloud Run</span></div></div>
+      <div class="parrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="pstep"><i class="ti ti-brand-google"></i><div><b>Cloud Provider</b><span>Google Cloud Platform</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="foot">
+    <div class="panel principles">
+      <span class="lbl">Design Principles</span>
+      <div class="ps">
+        <span>Zero-Friction</span><span>Liability-First</span><span>Compliant-by-Design</span>
+        <span>Privacy-First</span><span>Auditable</span><span>Scalable</span>
+      </div>
+    </div>
+    <div class="sign">
+      <b>LUNAS</b>
+      <span>Tim ERRNOR · Digdaya x Hackathon 2026</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "venvPath": "/home/nblauliadka/lunas-backend",
+  "venv": "venv",
+  "extraPaths": [
+    "/home/nblauliadka/lunas-backend"
+  ]
+}
