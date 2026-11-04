@@ -5,8 +5,7 @@
 | Field | Nilai |
 |---|---|
 | Nama Proyek | Hackathon Pidi |
-| Repo | dezzorigin/hackathon-pidi |
-| Tech Stack | HTML/CSS/JavaScript |
+| Tech Stack | Vite, Next.js, Python |
 | Status | Dalam pengembangan |
 | Penanggung Jawab | Nabil Aulia Dika |
 | Versi Dokumen | 1.0 |
@@ -14,7 +13,7 @@
 
 ## 2. Latar Belakang
 
-Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional untuk memastikan ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
+Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional agar ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
 
 ## 3. Masalah yang Diselesaikan
 
@@ -40,16 +39,17 @@ Pengguna membutuhkan solusi digital yang efisien, terukur, dan mudah dipelihara 
 ## 6. Fitur & Persyaratan Fungsional
 
 Struktur proyek (file/direktori utama):
-- .gitignore
 - HACKATON X DIGDAYA/
 - LUNAS/
-- README.md
-- arsitekturv2lunas.html
 - dokumentasi arsitektur/
 - errnor-team-portfolio/
 - file/
 - image/
 - jobdesk/
+- LICENSE
+- PRD.md
+- README.md
+- arsitekturv2lunas.html
 
 ## 7. Persyaratan Non-Fungsional
 
@@ -60,7 +60,7 @@ Struktur proyek (file/direktori utama):
 
 ## 8. Arsitektur & Tech Stack
 
-HTML/CSS/JavaScript
+Vite, Next.js, Python
 
 ## 9. Milestone / Roadmap
 
